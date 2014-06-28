@@ -14,7 +14,7 @@ mkdir bots && cd bots
 virtualenv-2.7 venv && source venv/bin/activate
 pip install tweepy
 git clone https://github.com/thricedotted/twitterbot.git
-cd twitterbot && python setup.py install
+cd twitterbot && python setup.py install && cd ..
 ```
 
 Cool! you're ready to start using twitterbot!
