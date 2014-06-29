@@ -162,16 +162,24 @@ class TwitterBot:
         self.state['followers'].append(f_id)
 
 
-    def post_tweet(self, text, reply_to=None):
+    def post_tweet(self, text, reply_to=None, media=None):
+        kwargs = {}
+        args = [text]
+        if media is not None:
+            cmd = self.api.update_with_media
+            args.insert(0, media)
+        else:
+            cmd = self.api.update_status
+
         try:
             self.log('Tweeting "{}"'.format(text))
             if reply_to:
                 self.log("-- Responding to status {}".format(self._tweet_url(reply_to)))
-                tweet = self.api.update_status(text, in_reply_to_status_id=reply_to.id)
+                kwargs['in_reply_to_status_id'] = reply_to.id
             else:
                 self.log("-- Posting to own timeline")
-                tweet = self.api.update_status(text)
 
+            tweet = cmd(*args, **kwargs)
             self.log('Status posted at {}'.format(self._tweet_url(tweet)))
             return True
 
