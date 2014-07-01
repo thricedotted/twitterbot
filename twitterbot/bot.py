@@ -17,6 +17,15 @@ import random
 import cPickle as pickle
 
 
+def ignore(method):
+    """
+    Use the @ignore decorator on TwitterBot methods you wish to leave
+    unimplemented, such as on_timeline and on_mention.
+    """
+    method.not_implemented = True
+    return method
+
+
 class TwitterBot:
 
     def __init__(self):
@@ -189,6 +198,10 @@ class TwitterBot:
             self._log_tweepy_error('Can\'t fav status', e)
 
 
+    def _ignore_method(self, method):
+        return hasattr(method, 'not_implemented') and method.not_implemented
+
+
     def _handle_timeline(self):
         """
         Reads the latest tweets in the bots timeline and perform some action.
@@ -238,6 +251,10 @@ class TwitterBot:
         """
         Checks mentions and loads most recent tweets into the mention queue
         """
+        if self._ignore_method(self.on_mention):
+            logging.debug('Ignoring mentions')
+            return
+
         try:
             current_mentions = self.api.mentions_timeline(since_id=self.state['last_mention_id'], count=100)
 
@@ -262,6 +279,10 @@ class TwitterBot:
         """
         Checks timeline and loads most recent tweets into recent timeline
         """
+        if self._ignore_method(self.on_timeline):
+            logging.debug('Ignoring timeline')
+            return
+
         try:
             current_timeline = self.api.home_timeline(count=200, since_id=self.state['last_timeline_id'])
 
