@@ -226,7 +226,7 @@ class TwitterBot:
         Returns a string of users to @-mention when responding to a tweet.
         """
         mention_back = ['@' + tweet.author.screen_name]
-        mention_back += [s for s in re.split('[^@\w]', tweet.text) if len(s) > 2 and [0] == '@' and s[1:] != self.screen_name]
+        mention_back += [s for s in re.split('[^@\w]', tweet.text) if len(s) > 2 and s[0] == '@' and s[1:] != self.screen_name]
 
         if self.config['reply_followers_only']:
             mention_back = [s for s in mention_back if s[1:] in self.state['followers'] or s == '@' + tweet.author.screen_name]
