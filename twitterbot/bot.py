@@ -38,6 +38,8 @@ class TwitterBot:
         self.config['reply_interval'] = 10
         self.config['reply_interval_range'] = None
 
+        self.config['logging_level'] = logging.DEBUG
+
         # call the custom initialization
         self.bot_init()
 
@@ -53,7 +55,7 @@ class TwitterBot:
 
         logging.basicConfig(format='%(asctime)s | %(levelname)s: %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p', 
             filename=self.screen_name + '.log',
-            level=logging.DEBUG)
+            level=self.config['logging_level'])
 
         logging.info('Initializing bot...')
 
