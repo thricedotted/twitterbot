@@ -1,6 +1,8 @@
 # twitterbot
 
-A Python framework for creating interactive Twitter bots! CURRENTLY SUPER BETA.
+A Python framework for creating interactive Twitter bots! CURRENTLY SUPER BETA. MAYBE EVEN ALPHA.
+
+** HIGHLY EXPERIMENTAL USE AT YR OWN RISK **
 
 ## Installation
 
