@@ -7,6 +7,7 @@
 from __future__ import division
 from __future__ import unicode_literals
 
+import os
 import codecs
 import json
 import logging
@@ -48,6 +49,7 @@ class TwitterBot:
         self.config['reply_interval_range'] = None
 
         self.config['logging_level'] = logging.DEBUG
+        self.config['storage'] = FileStorage()
 
         # call the custom initialization
         self.bot_init()
@@ -60,7 +62,6 @@ class TwitterBot:
         self.screen_name = self.api.me().screen_name
 
         self.state = {}
-        self.state_file = self.screen_name + '_state.pkl'
 
         logging.basicConfig(format='%(asctime)s | %(levelname)s: %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p', 
             filename=self.screen_name + '.log',
@@ -69,14 +70,10 @@ class TwitterBot:
         logging.info('Initializing bot...')
 
         try:
-            with open(self.state_file) as f:
-                logging.info('Reading in previous state from {}'.format(self.state_file))
+            with self.config['storage'].read(self.screen_name) as f:
                 self.state = pickle.load(f)
 
         except IOError:
-            self.state_file = self.screen_name + '_state.pkl'
-            logging.info('Creating new state file at {}'.format(self.state_file))
-
             self.state['last_timeline_id'] = 1
             self.state['last_mention_id'] = 1
 
@@ -126,7 +123,7 @@ class TwitterBot:
 
 
     def _save_state(self):
-        with open(self.state_file, 'wb') as f:
+        with self.config['storage'].write(self.screen_name) as f:
             pickle.dump(self.state, f)
             self.log('Bot state saved')
 
@@ -384,3 +381,40 @@ class TwitterBot:
 
             logging.info("Sleeping for a bit...")
             time.sleep(30)
+
+
+class FileStorage(object):
+    """
+    Default storage adapter.
+
+    Adapters must implement two methods: read(name) and write(name).
+    """
+
+
+    def read(self, name):
+        """
+        Return an IO-like object that will produce binary data when read from.
+        If nothing is stored under the given name, raise IOError.
+        """
+        filename = self._get_filename(name)
+        if os.path.exists(filename):
+            logging.debug("Reading from {}".format(filename))
+        else:
+            logging.debug("{} doesn't exist".format(filename))
+        return open(filename)
+
+
+    def write(self, name):
+        """
+        Return an IO-like object that will store binary data written to it.
+        """
+        filename = self._get_filename(name)
+        if os.path.exists(filename):
+            logging.debug("Overwriting {}".format(filename))
+        else:
+            logging.debug("Creating {}".format(filename))
+        return open(filename, 'wb')
+
+
+    def _get_filename(self, name):
+        return '{}_state.pkl'.format(name)
