@@ -51,6 +51,8 @@ class TwitterBot:
         self.config['logging_level'] = logging.DEBUG
         self.config['storage'] = FileStorage()
 
+        self.state = {}
+
         # call the custom initialization
         self.bot_init()
 
@@ -60,8 +62,6 @@ class TwitterBot:
 
         self.id = self.api.me().id
         self.screen_name = self.api.me().screen_name
-
-        self.state = {}
 
         logging.basicConfig(format='%(asctime)s | %(levelname)s: %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p', 
             filename=self.screen_name + '.log',
