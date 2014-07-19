@@ -89,11 +89,10 @@ class TwitterBot:
             self.state['recent_timeline'] = []
             self.state['mention_queue'] = []
 
-            self.state['friends'] = self.api.friends_ids(self.id)
-            self.state['followers'] = self.api.followers_ids(self.id)
-            self.state['new_followers'] = []
-            self.state['last_follow_check'] = 0
-
+        self.state['friends'] = self.api.friends_ids(self.id)
+        self.state['followers'] = self.api.followers_ids(self.id)
+        self.state['new_followers'] = []
+        self.state['last_follow_check'] = 0
 
         logging.info('Bot initialized!')
 
