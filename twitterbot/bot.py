@@ -283,6 +283,9 @@ class TwitterBot:
         except tweepy.TweepError as e:
             self._log_tweepy_error('Can\'t retrieve mentions', e)
 
+        except IncompleteRead as e:
+            self.log('Incomplete read error -- skipping mentions update')
+
 
     def _check_timeline(self):
         """
@@ -310,6 +313,9 @@ class TwitterBot:
         except tweepy.TweepError as e:
             self._log_tweepy_error('Can\'t retrieve timeline', e)
 
+        except IncompleteRead as e:
+            self.log('Incomplete read error -- skipping timeline update')
+
 
     def _check_followers(self):
         """
@@ -324,6 +330,9 @@ class TwitterBot:
 
         except tweepy.TweepError as e:
             self._log_tweepy_error('Can\'t update followers', e)
+
+        except IncompleteRead as e:
+            self.log('Incomplete read error -- skipping followers update')
 
             
     def _handle_followers(self):
