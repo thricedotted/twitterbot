@@ -112,9 +112,12 @@ class TwitterBot:
 
 
     def _log_tweepy_error(self, message, e):
-        e_message = e.message[0]['message']
-        code = e.message[0]['code']
-        self.log("{}: {} ({})".format(message, e_message, code), level=logging.ERROR)
+        try:
+            e_message = e.message[0]['message']
+            code = e.message[0]['code']
+            self.log("{}: {} ({})".format(message, e_message, code), level=logging.ERROR)
+        except:
+            self.log(message, e)
 
 
     def _tweet_url(self, tweet):
