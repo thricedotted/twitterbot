@@ -17,6 +17,8 @@ import re
 import random
 import cPickle as pickle
 
+from httplib import IncompleteRead
+
 
 def ignore(method):
     """
