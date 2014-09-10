@@ -50,6 +50,8 @@ class TwitterBot:
         self.config['reply_interval'] = 10
         self.config['reply_interval_range'] = None
 
+        self.config['ignore_timeline_mentions'] = True
+
         self.config['logging_level'] = logging.DEBUG
         self.config['storage'] = FileStorage()
 
@@ -300,8 +302,15 @@ class TwitterBot:
         try:
             current_timeline = self.api.home_timeline(count=200, since_id=self.state['last_timeline_id'])
 
-            # remove all tweets with mentions (heuristically)
-            current_timeline = [t for t in current_timeline if '@' not in t.text and t.author.screen_name.lower() != self.screen_name.lower()]
+            # remove my tweets
+            current_timeline = [t for t in current_timeline if t.author.screen_name.lower() != self.screen_name.lower()]
+
+            # remove all tweets mentioning me
+            current_timeline = [t for t in current_timeline if not re.search('@'+self.screen_name, t.text, flags=re.IGNORECASE)]
+
+            if self.config['ignore_timeline_mentions']:
+                # remove all tweets with mentions (heuristically)
+                current_timeline = [t for t in current_timeline if '@' not in t.text]
 
             if len(current_timeline) != 0:
                 self.state['last_timeline_id'] = current_timeline[0].id
