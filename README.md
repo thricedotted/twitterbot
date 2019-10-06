@@ -1,3 +1,9 @@
+# THIS REPOSITORY IS ARCHIVED!
+
+At the time of writing, it's been five years since I've touched this. It surprises me that people still find it!
+
+---
+
 # twitterbot
 
 A Python framework for creating interactive Twitter bots! CURRENTLY SUPER BETA. MAYBE EVEN ALPHA.
